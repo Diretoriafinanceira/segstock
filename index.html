@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEGSTOCK - Sistema de Gestão de Estoque SEGSAT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --blue-primary: #0A2540;
+            --blue-secondary: #1E3A8A;
+            --blue-accent: #2563EB;
+            --blue-light: #EFF6FF;
+            /* Alterado tom de vermelho para azul bebê */
+            --red-primary: #7DD3FC; 
+            --red-hover: #38BDF8;
+            --red-light: #F0F9FF;
+            --white: #FFFFFF;
+            --gray-50: #F8FAFC;
+            --gray-100: #F1F5F9;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1E293B;
+            --status-andamento: #D97706;
+            --status-andamento-bg: #FEF3C7;
+            --status-ok: #16A34A;
+            --status-ok-bg: #DCFCE7;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+        }
+
+        body.dark-mode {
+            --blue-primary: #0F172A;
+            --blue-secondary: #1E293B;
+            --blue-accent: #3B82F6;
+            --blue-light: #1E293B;
+            --white: #1E293B;
+            --gray-50: #0F172A;
+            --gray-100: #334155;
+            --gray-200: #475569;
+            --gray-300: #64748B;
+            --gray-600: #94A3B8;
+            --gray-700: #E2E8F0;
+            --gray-800: #F8FAFC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            display: flex;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--blue-primary) 0%, #061527 100%);
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .logo-container {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--red-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #0A2540;
+            box-shadow: 0 4px 10px rgba(125, 211, 252, 0.4);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .logo-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #FFFFFF;
+            line-height: 1.1;
+        }
+
+        .logo-title span {
+            color: var(--red-primary);
+        }
+
+        .logo-subtitle {
+            font-size: 11px;
+            font-weight: 500;
+            color: #CBD5E1;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            padding: 12px 12px 6px;
+            letter-spacing: 0.8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            color: #CBD5E1;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #FFFFFF;
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #FFFFFF;
+            border-left-color: var(--red-primary);
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+            color: #CBD5E1;
+        }
+
+        .nav-item.active i {
+            color: var(--red-primary);
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-sidebar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+            color: white;
+        }
+
+        .btn-change-password {
+            background-color: var(--blue-accent);
+        }
+
+        .btn-change-password:hover {
+            background-color: var(--blue-secondary);
+        }
+
+        .btn-theme-toggle {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: calc(100% - 280px);
+            transition: all 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--white);
+            padding: 20px 28px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--blue-primary);
+        }
+
+        body.dark-mode .header-title h1 {
+            color: var(--gray-800);
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-top: 4px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--blue-primary);
+            color: #FFFFFF;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--blue-secondary);
+            box-shadow: 0 4px 12px rgba(10, 37, 64, 0.25);
+        }
+
+        .btn-danger {
+            background-color: var(--red-primary);
+            color: #0A2540;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--red-hover);
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+        }
+
+        .btn-warning {
+            background-color: #F59E0B;
+            color: #FFFFFF;
+        }
+
+        .btn-warning:hover {
+            background-color: #D97706;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+        }
+
+        .btn-outline {
+            background-color: var(--white);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray-100);
+            border-color: var(--gray-600);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .metric-icon.blue { background: var(--blue-light); color: var(--blue-accent); }
+        .metric-icon.red { background: var(--red-light); color: #0284C7; }
+        .metric-icon.amber { background: var(--status-andamento-bg); color: var(--status-andamento); }
+        .metric-icon.green { background: var(--status-ok-bg); color: var(--status-ok); }
+
+        .metric-data h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .metric-data p {
+            font-size: 12px;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        /* Dashboard Breakdown Section */
+        .dashboard-charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .chart-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-header {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--blue-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        body.dark-mode .chart-header {
+            color: var(--gray-800);
+        }
+
+        .progress-bar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .progress-item-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12.5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .progress-bg {
+            height: 8px;
+            background-color: var(--gray-100);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--blue-accent);
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+
+        .badge-category {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background-color: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .badge-saida-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #FEF3C7;
+            color: #D97706;
+            margin-left: 6px;
+        }
+
+        /* Main Section Container */
+        .card {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--white);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--blue-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.dark-mode .card-title {
+            color: var(--gray-800);
+        }
+
+        .card-title i {
+            color: var(--red-primary);
+        }
+
+        .search-filter-bar {
+            padding: 16px 24px;
+            background-color: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .search-input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-600);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 9px 12px 9px 40px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            outline: none;
+            background-color: var(--white);
+            color: var(--gray-800);
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--blue-accent);
+        }
+
+        .filter-select {
+            padding: 9px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            outline: none;
+            background-color: var(--white);
+            color: var(--gray-700);
+        }
+
+        /* Table Styling */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13.5px;
+        }
+
+        th {
+            background-color: var(--gray-100);
+            color: var(--gray-700);
+            font-weight: 600;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--gray-200);
+            white-space: nowrap;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        th.th-actions {
+            text-align: center;
+            width: 160px;
+        }
+
+        td {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-800);
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background-color: rgba(239, 246, 255, 0.4);
+        }
+
+        .code-badge {
+            font-family: monospace;
+            font-weight: 700;
+            background-color: var(--gray-100);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--blue-primary);
+            font-size: 12px;
+            border: 1px solid var(--gray-300);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            user-select: none;
+        }
+
+        .status-badge.andamento {
+            background-color: var(--status-andamento-bg);
+            color: var(--status-andamento);
+            border: 1px solid rgba(217, 119, 6, 0.3);
+        }
+
+        .status-badge.ok {
+            background-color: var(--status-ok-bg);
+            color: var(--status-ok);
+            border: 1px solid rgba(22, 163, 74, 0.3);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--gray-300);
+            background-color: var(--white);
+            color: var(--gray-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-icon.delete:hover {
+            background-color: var(--red-light);
+            color: #0284C7;
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-icon.info-btn:hover {
+            background-color: var(--blue-light);
+            color: var(--blue-accent);
+            border-color: var(--blue-accent);
+        }
+
+        .btn-icon.descarte-btn:hover {
+            background-color: #FEF2F2;
+            color: #DC2626;
+            border-color: #DC2626;
+        }
+
+        .btn-icon.voltar-btn:hover {
+            background-color: #F0FDF4;
+            color: #16A34A;
+            border-color: #16A34A;
+        }
+
+        .empty-state {
+            padding: 48px;
+            text-align: center;
+            color: var(--gray-600);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: var(--gray-300);
+            margin-bottom: 12px;
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--gray-200);
+            border-top-color: var(--red-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Modal Form */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 37, 64, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 540px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: transform 0.2s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            background-color: var(--blue-primary);
+            color: #FFFFFF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .form-control {
+            padding: 10px 14px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 13.5px;
+            outline: none;
+            background-color: var(--white);
+            color: var(--gray-800);
+        }
+
+        .form-control:focus {
+            border-color: var(--blue-accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            background-color: var(--gray-50);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 14px 20px;
+            background-color: var(--gray-800);
+            color: #FFFFFF;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 2000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success i { color: #22C55E; }
+        .toast.info i { color: #3B82F6; }
+
+        /* Responsividade para Celulares e Tablets */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
+                width: calc(100% - 240px);
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .logo-container {
+                padding: 16px;
+            }
+            .nav-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 10px;
+                white-space: nowrap;
+            }
+            .nav-label {
+                display: none;
+            }
+            .sidebar-footer {
+                flex-direction: row;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 16px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-actions {
+                width: 100%;
+            }
+            .header-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay de Carregamento (Bolinha no Meio) -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <div class="logo-icon">
+                <i class="fa-solid fa-boxes-stacked"></i>
+            </div>
+            <div class="logo-text">
+                <div class="logo-title">SEG<span>STOCK</span></div>
+                <div class="logo-subtitle">SEGSAT ESTOQUE</div>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <a class="nav-item active" onclick="switchCategory('dashboard')">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard Geral</span>
+            </a>
+
+            <div class="nav-label">Categorias do Estoque</div>
+            
+            <a class="nav-item" onclick="switchCategory('equip_prontos')">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>Equipamentos Prontos</span>
+            </a>
+            <a class="nav-item" onclick="switchCategory('rastreamento_novo')">
+                <i class="fa-solid fa-satellite"></i>
+                <span>Rastreamento / Novo</span>
+            </a>
+            <a class="nav-item" onclick="switchCategory('rastreamento')">
+                <i class="fa-solid fa-satellite-dish"></i>
+                <span>Rastreamento (Retirada)</span>
+            </a>
+            <a class="nav-item" onclick="switchCategory('video_novo')">
+                <i class="fa-solid fa-video"></i>
+                <span>Vídeo Monitoramento (Novo)</span>
+            </a>
+            <a class="nav-item" onclick="switchCategory('video_usado')">
+                <i class="fa-solid fa-video-slash"></i>
+                <span>Vídeo Monitoramento (Retirada)</span>
+            </a>
+            <a class="nav-item" onclick="switchCategory('manutencao')">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <span>Equip. Manutenção</span>
+            </a>
+            <a class="nav-item" onclick="switchCategory('acessorios')">
+                <i class="fa-solid fa-plug"></i>
+                <span>Acessórios</span>
+            </a>
+            <a class="nav-item" onclick="switchCategory('saida')">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Saída</span>
+            </a>
+            <a class="nav-item" onclick="switchCategory('descarte')">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Descarte</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-sidebar btn-change-password" onclick="openPasswordModal()">
+                <i class="fa-solid fa-key"></i> Mudar Senha
+            </button>
+            <button class="btn-sidebar btn-theme-toggle" onclick="toggleDarkMode()">
+                <i class="fa-solid fa-moon" id="theme-icon"></i> <span id="theme-text">Modo Noturno</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+        <!-- Top Header -->
+        <header class="header">
+            <div class="header-title">
+                <h1 id="category-header-title">Dashboard Geral</h1>
+                <p id="category-header-desc">Visão consolidada e métricas em tempo real de todo o estoque.</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline" onclick="loadFromGoogleSheets()">
+                    <i class="fa-solid fa-rotate"></i> Sincronizar Planilha
+                </button>
+                <button class="btn btn-outline" id="btn-export-header" onclick="exportCSV()">
+                    <i class="fa-solid fa-download"></i> Exportar
+                </button>
+                <button class="btn btn-warning" id="btn-saida-header" onclick="openSaidaModal()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Saída
+                </button>
+                <button class="btn btn-primary" id="btn-lote-header" onclick="openLoteModal()">
+                    <i class="fa-solid fa-file-import"></i> Em Lote
+                </button>
+                <button class="btn btn-danger" id="btn-new-header" onclick="openModal()">
+                    <i class="fa-solid fa-plus"></i> Novo Item
+                </button>
+            </div>
+        </header>
+
+        <!-- Metric Dashboard Cards -->
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon blue"><i class="fa-solid fa-boxes-stacked"></i></div>
+                <div class="metric-data">
+                    <h3 id="metric-total">0</h3>
+                    <p id="label-metric-total">Total Geral no Estoque</p>
+                </div>
+            </div>
+            <div class="metric-card" id="metric-andamento-container">
+                <div class="metric-icon amber"><i class="fa-solid fa-clock"></i></div>
+                <div class="metric-data">
+                    <h3 id="metric-andamento">0</h3>
+                    <p id="label-metric-andamento">Pirâmide: Em Andamento</p>
+                </div>
+            </div>
+            <div class="metric-card" id="metric-ok-container">
+                <div class="metric-icon green"><i class="fa-solid fa-check-double"></i></div>
+                <div class="metric-data">
+                    <h3 id="metric-ok">0</h3>
+                    <p id="label-metric-ok">Pirâmide: Concluídos (OK)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Visual Charts Breakdown Section -->
+        <section class="dashboard-charts-grid" id="dashboard-visuals-container">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <span>Distribuição de Itens por Categoria</span>
+                    <i class="fa-solid fa-chart-column"></i>
+                </div>
+                <div class="progress-bar-container" id="category-distribution-bars"></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <span>Status Global da Pirâmide</span>
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div class="progress-bar-container" id="piramide-status-bars"></div>
+            </div>
+        </section>
+
+        <!-- Main Data Table Container -->
+        <section class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span id="table-card-title">Registros do Sistema</span>
+                </div>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="search-filter-bar">
+                <div class="search-input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" class="search-input" placeholder="Filtro global da planilha (código, equipamento, n° série...)" onkeyup="renderTable()">
+                </div>
+                <select id="filter-category" class="filter-select" onchange="renderTable()" style="display: none;">
+                    <option value="ALL">Categoria: Todas</option>
+                    <option value="equip_prontos">Equipamentos Prontos</option>
+                    <option value="rastreamento_novo">Rastreamento / Novo</option>
+                    <option value="rastreamento">Rastreamento (Retirada)</option>
+                    <option value="video_novo">Vídeo Novo</option>
+                    <option value="video_usado">Vídeo Retirada</option>
+                    <option value="manutencao">Manutenção</option>
+                    <option value="acessorios">Acessórios</option>
+                    <option value="saida">Saída</option>
+                    <option value="descarte">Descarte</option>
+                </select>
+                <select id="filter-piramide" class="filter-select" onchange="renderTable()">
+                    <option value="ALL">Status Pirâmide: Todos</option>
+                    <option value="EM ANDAMENTO">Em Andamento</option>
+                    <option value="OK">OK</option>
+                </select>
+            </div>
+
+            <!-- Dynamic Table -->
+            <div class="table-responsive">
+                <table id="data-table">
+                    <thead id="table-head"></thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Entrada em Lote -->
+    <div class="modal-overlay" id="lote-modal-overlay">
+        <div class="modal" style="max-width: 650px;">
+            <div class="modal-header" style="background-color: var(--blue-accent);">
+                <h3>Entrada em Lote (Colar do Excel)</h3>
+                <button class="modal-close" onclick="closeLoteModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="processarLote(event)">
+                <div class="modal-body">
+                    <p style="font-size: 12.5px; color: var(--gray-600);">
+                        Cole abaixo as linhas copiadas do Excel.<br>
+                        <strong>Ordem esperada das colunas:</strong> CÓDIGO | EQUIPAMENTO | N° SÉRIE | DATA | [PIRÂMIDE] | OBSERVAÇÃO
+                    </p>
+                    <div class="form-group">
+                        <textarea id="lote-text" class="form-control" rows="10" placeholder="Exemplo:
+COD123	Rastreador X	SN987654	2026-09-01	EM ANDAMENTO	Lote recebido
+COD124	Rastreador X	SN987655	2026-09-01	EM ANDAMENTO	Lote recebido" style="font-family: monospace; font-size: 12px;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeLoteModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-file-import"></i> Processar Lote</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Form (Novo Item) -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Novo Registro</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="item-form" onsubmit="saveItem(event)">
+                <div class="modal-body" id="modal-fields"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-floppy-disk"></i> Salvar Registro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Form (Saída) -->
+    <div class="modal-overlay" id="saida-modal-overlay">
+        <div class="modal">
+            <div class="modal-header" style="background-color: #F59E0B; color: #FFFFFF;">
+                <h3>Registrar Saída de Equipamento</h3>
+                <button class="modal-close" onclick="closeSaidaModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="saida-form" onsubmit="saveSaida(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>CÓDIGO</label>
+                        <input type="text" id="saida-codigo" class="form-control" required placeholder="Código do item...">
+                    </div>
+                    <div class="form-group">
+                        <label>EQUIPAMENTO</label>
+                        <select id="saida-equipamento" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>N° DE SÉRIE</label>
+                        <input type="text" id="saida-serie" class="form-control" required placeholder="Número de série...">
+                    </div>
+                    <div class="form-group">
+                        <label>DATA DE SAÍDA</label>
+                        <input type="date" id="saida-data" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>OBSERVAÇÃO (máx 50 caracteres)</label>
+                        <input type="text" id="saida-observacao" class="form-control" maxlength="50" placeholder="Motivo ou destino da saída...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeSaidaModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-warning"><i class="fa-solid fa-right-from-bracket"></i> Confirmar Saída</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Voltar para Categoria -->
+    <div class="modal-overlay" id="voltar-modal-overlay">
+        <div class="modal">
+            <div class="modal-header" style="background-color: var(--blue-primary); color: #FFFFFF;">
+                <h3>MANDAR PARA</h3>
+                <button class="modal-close" onclick="closeVoltarModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="voltar-form" onsubmit="confirmVoltar(event)">
+                <div class="modal-body">
+                    <p style="font-size: 13.5px; color: var(--gray-700); margin-bottom: 8px;">Selecione para qual aba da planilha o equipamento deve retornar:</p>
+                    <div class="form-group">
+                        <label>Aba de Destino</label>
+                        <select id="voltar-target-category" class="form-control" required>
+                            <option value="equip_prontos">Equipamentos Prontos</option>
+                            <option value="rastreamento_novo">Rastreamento / Novo</option>
+                            <option value="rastreamento">Rastreamento (Retirada)</option>
+                            <option value="video_novo">Vídeo Monitoramento (Novo)</option>
+                            <option value="video_usado">Vídeo Monitoramento (Retirada)</option>
+                            <option value="manutencao">Equip. Manutenção</option>
+                            <option value="acessorios">Acessórios</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeVoltarModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-rotate-left"></i> Retornar Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Mandar para Descarte -->
+    <div class="modal-overlay" id="descarte-modal-overlay">
+        <div class="modal">
+            <div class="modal-header" style="background-color: #DC2626; color: #FFFFFF;">
+                <h3>Mandar para Descarte</h3>
+                <button class="modal-close" onclick="closeDescarteModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="descarte-form" onsubmit="confirmDescarte(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>DATA DE DESCARTE</label>
+                        <input type="date" id="descarte-data" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>OBSERVAÇÃO DO DESCARTE</label>
+                        <input type="text" id="descarte-observacao" class="form-control" required placeholder="Motivo do descarte...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeDescarteModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-danger" style="background-color: #DC2626; color: #FFF;"><i class="fa-solid fa-trash-can"></i> Mover para Descarte</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Informação (Exibir Data + Observação) -->
+    <div class="modal-overlay" id="info-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Informações do Registro</h3>
+                <button class="modal-close" onclick="closeInfoModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>DATA:</label>
+                    <p id="info-modal-data" style="font-size: 14px; font-weight: 600; color: var(--gray-800);">-</p>
+                </div>
+                <div class="form-group">
+                    <label>OBSERVAÇÃO:</label>
+                    <p id="info-modal-observacao" style="font-size: 14px; font-weight: 500; color: var(--gray-700); background: var(--gray-100); padding: 10px; border-radius: var(--radius-sm); min-height: 48px;">Sem observações.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeInfoModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Mudar Senha -->
+    <div class="modal-overlay" id="password-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Mudar Senha de Exclusão</h3>
+                <button class="modal-close" onclick="closePasswordModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="password-form" onsubmit="changePassword(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Senha Atual</label>
+                        <input type="password" id="current-password" class="form-control" required placeholder="Digite a senha atual...">
+                    </div>
+                    <div class="form-group">
+                        <label>Nova Senha</label>
+                        <input type="password" id="new-password" class="form-control" required placeholder="Digite a nova senha...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closePasswordModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Alterar Senha</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Exclusão com Senha -->
+    <div class="modal-overlay" id="delete-modal-overlay">
+        <div class="modal">
+            <div class="modal-header" style="background-color: var(--blue-primary);">
+                <h3>Confirmar Exclusão</h3>
+                <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="delete-form" onsubmit="confirmDeleteItem(event)">
+                <div class="modal-body">
+                    <p style="font-size: 13.5px; color: var(--gray-700); margin-bottom: 12px;">Para confirmar a exclusão deste item, digite a senha de autorização:</p>
+                    <div class="form-group">
+                        <label>Senha de Autorização</label>
+                        <input type="password" id="delete-password" class="form-control" required placeholder="Digite a senha...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i> Excluir Registro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-message">Operação realizada com sucesso!</span>
+    </div>
+
+    <script>
+        const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbxLGbtpjtBefkW2eWafZWAz0wxGj82GhAt05w7FCQ84uRqdG_XZzdBZetuDNBTIxzLs/exec";
+
+        const EQUIPMENT_LIST = [
+            "RASTREADOR FMB001",
+            "RASTREADOR FMB140",
+            "RASTREADOR FMB130",
+            "RASTREADOR FMC003",
+            "RASTREADOR FMC130",
+            "RASTREADOR FMC150",
+            "LEITORA J-M15",
+            "RASTREADOR J-R11",
+            "LEITORA J-R12",
+            "RASTREADOR NT20",
+            "RASTREADOR NT26-OBD",
+            "RASTREADOR NT40",
+            "RASTREADOR NT40-OBD",
+            "RASTREADOR NT46-OBD",
+            "RASTREADOR XT40",
+            "RASTREADOR XT40 - OBD",
+            "RASTREADOR XT40-PERSONAL",
+            "LEITORA RFID",
+            "RASTREADOR SMART5",
+            "RASTREADOR SMART PRO 5 LITE",
+            "RASTREADOR SUNTECH",
+            "RASTREADOR GV300",
+            "LEITORA SG BRAS",
+            "SISTEMA RAST. VEICULAR DVR 3404 	3698",
+            "SISTEMA RAST. VEICULAR DVR 5404 	3639",
+            "CAMERA DASHCAM DCM 5404 GW IA	4597",
+            "DASHCAM 3002 GW IA	4893",
+            "CÂMERA DSM 1012	3868",
+            "CÂMERA MONITORAMENTO DE PISTA 1006	3886",
+            "MONITOR DE INFORMAÇÕES 1154	3700",
+            "CÂMERA TV IP DOME VIPC 1230 G2	4619",
+            "CAMERA DE TV VEICULAR VHDM 1012 D	4599",
+            "CÂMERA VEIC VHDM 3020 D	4705",
+            "CÂMERA 1080P 	3869",
+            "CÂMERA 3105	3787/3596",
+            "CÂMERA VHDM 1230 D BLACK G4	3781",
+            "CÂMERA 3125	3516",
+            "CÂMERA 3100	3525",
+            "CABO AVIATION 3M	3702",
+            "CABO AVIATION 11M	3521",
+            "CABO EXTS BMW (AVIATION DASHCAM)	4704"
+        ];
+
+        const CATEGORIES = {
+            dashboard: {
+                title: "Dashboard Geral",
+                desc: "Visão consolidada e métricas em tempo real de todo o estoque.",
+                hasPiramide: true
+            },
+            equip_prontos: {
+                title: "EQUIPAMENTOS PRONTOS",
+                desc: "Lista e controle de equipamentos testados e prontos para uso.",
+                hasPiramide: false,
+                fields: [
+                    { id: 'codigo', label: 'CÓDIGO', type: 'text', required: true },
+                    { id: 'equipamento', label: 'EQUIPAMENTO', type: 'select', options: EQUIPMENT_LIST, required: true },
+                    { id: 'serie', label: 'N° DE SÉRIE', type: 'text', required: true },
+                    { id: 'data', label: 'DATA', type: 'date', required: true },
+                    { id: 'observacao', label: 'OBSERVAÇÃO', type: 'text', required: false }
+                ]
+            },
+            rastreamento_novo: {
+                title: "RASTREAMENTO / NOVO",
+                desc: "Rastreadores novos recebidos em estoque.",
+                hasPiramide: false,
+                fields: [
+                    { id: 'codigo', label: 'CÓDIGO', type: 'text', required: true },
+                    { id: 'equipamento', label: 'EQUIPAMENTO', type: 'select', options: EQUIPMENT_LIST, required: true },
+                    { id: 'serie', label: 'N° DE SÉRIE', type: 'text', required: true },
+                    { id: 'data', label: 'DATA', type: 'date', required: true },
+                    { id: 'observacao', label: 'OBSERVAÇÃO', type: 'text', required: false }
+                ]
+            },
+            rastreamento: {
+                title: "RASTREAMENTO - RETIRADA / USADOS",
+                desc: "Controle de rastreadores retirados de veículos e em estado de uso.",
+                hasPiramide: true,
+                fields: [
+                    { id: 'codigo', label: 'CÓDIGO', type: 'text', required: true },
+                    { id: 'equipamento', label: 'EQUIPAMENTO', type: 'select', options: EQUIPMENT_LIST, required: true },
+                    { id: 'serie', label: 'N° DE SÉRIE', type: 'text', required: true },
+                    { id: 'data', label: 'DATA', type: 'date', required: true },
+                    { id: 'piramide', label: 'PIRÂMIDE', type: 'select', options: ['EM ANDAMENTO', 'OK'], default: 'EM ANDAMENTO' },
+                    { id: 'observacao', label: 'OBSERVAÇÃO', type: 'text', required: false }
+                ]
+            },
+            video_novo: {
+                title: "VIDEO MONITORAMENTO / NOVO",
+                desc: "Equipamentos novos de vídeo monitoramento no estoque principal.",
+                hasPiramide: false,
+                fields: [
+                    { id: 'codigo', label: 'CÓDIGO', type: 'text', required: true },
+                    { id: 'equipamento', label: 'EQUIPAMENTO', type: 'select', options: EQUIPMENT_LIST, required: true },
+                    { id: 'serie', label: 'N° DE SÉRIE', type: 'text', required: true },
+                    { id: 'data', label: 'DATA', type: 'date', required: true },
+                    { id: 'observacao', label: 'OBSERVAÇÃO', type: 'text', required: false }
+                ]
+            },
+            video_usado: {
+                title: "VÍDEOMONITORAMENTO - RETIRADA / USADOS",
+                desc: "Câmeras e equipamentos de vídeo retirados para reuso ou triagem.",
+                hasPiramide: true,
+                fields: [
+                    { id: 'codigo', label: 'CÓDIGO', type: 'text', required: true },
+                    { id: 'equipamento', label: 'EQUIPAMENTO', type: 'select', options: EQUIPMENT_LIST, required: true },
+                    { id: 'serie', label: 'N° DE SÉRIE', type: 'text', required: true },
+                    { id: 'data', label: 'DATA', type: 'date', required: true },
+                    { id: 'piramide', label: 'PIRÂMIDE', type: 'select', options: ['EM ANDAMENTO', 'OK'], default: 'EM ANDAMENTO' },
+                    { id: 'observacao', label: 'OBSERVAÇÃO', type: 'text', required: false }
+                ]
+            },
+            manutencao: {
+                title: "EQUIPAMENTO DE MANUTENÇÃO",
+                desc: "Itens destinados a reparo técnico ou manutenção preventiva.",
+                hasPiramide: true,
+                fields: [
+                    { id: 'codigo', label: 'CÓDIGO', type: 'text', required: true },
+                    { id: 'equipamento', label: 'EQUIPAMENTO', type: 'select', options: EQUIPMENT_LIST, required: true },
+                    { id: 'serie', label: 'N° DE SÉRIE', type: 'text', required: true },
+                    { id: 'data', label: 'DATA', type: 'date', required: true },
+                    { id: 'piramide', label: 'PIRÂMIDE', type: 'select', options: ['EM ANDAMENTO', 'OK'], default: 'EM ANDAMENTO' },
+                    { id: 'observacao', label: 'OBSERVAÇÃO', type: 'text', required: false }
+                ]
+            },
+            acessorios: {
+                title: "ACESSÓRIOS",
+                desc: "Controle de insumos, chicotes, antenas e acessórios diversos.",
+                hasPiramide: false,
+                fields: [
+                    { id: 'nome', label: 'NOME (DESCRIÇÃO)', type: 'text', required: true },
+                    { id: 'quantidade', label: 'QUANTIDADE TOTAL', type: 'number', required: true },
+                    { id: 'data', label: 'DATA', type: 'date', required: true },
+                    { id: 'observacao', label: 'OBSERVAÇÃO', type: 'text', required: false }
+                ]
+            },
+            saida: {
+                title: "SAÍDA",
+                desc: "Histórico e registro de equipamentos que saíram do estoque.",
+                hasPiramide: false,
+                fields: [
+                    { id: 'data', label: 'DATA', type: 'date', required: true },
+                    { id: 'observacao', label: 'OBSERVAÇÃO', type: 'text', required: false }
+                ]
+            },
+            descarte: {
+                title: "DESCARTE",
+                desc: "Registro de itens inoperantes descartados.",
+                hasPiramide: false,
+                fields: [
+                    { id: 'data', label: 'DATA', type: 'date', required: true },
+                    { id: 'observacao', label: 'OBSERVAÇÃO', type: 'text', required: false }
+                ]
+            }
+        };
+
+        const CATEGORY_NAMES = {
+            equip_prontos: "Equipamentos Prontos",
+            rastreamento_novo: "Rastreamento / Novo",
+            rastreamento: "Rastreamento (Retirada)",
+            video_novo: "Vídeo Novo",
+            video_usado: "Vídeo Retirada",
+            manutencao: "Manutenção",
+            acessorios: "Acessórios",
+            saida: "Saída",
+            descarte: "Descarte"
+        };
+
+        let currentCategory = 'dashboard';
+        let itemToDeleteId = null;
+        let itemToDeleteCategory = null;
+
+        let itemToVoltar = null;
+        let itemToDescarte = null;
+
+        let systemPassword = localStorage.getItem('segstock_password') || '123456';
+
+        let db = JSON.parse(localStorage.getItem('segstock_db')) || {
+            equip_prontos: [],
+            rastreamento_novo: [],
+            rastreamento: [],
+            video_novo: [],
+            video_usado: [],
+            manutencao: [],
+            acessorios: [],
+            saida: [],
+            descarte: []
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedCategory = history.state?.category || 'dashboard';
+            switchCategory(savedCategory, false);
+            loadFromGoogleSheets();
+
+            if (localStorage.getItem('segstock_theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+                document.getElementById('theme-text').innerText = 'Modo Claro';
+            }
+        });
+
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.category) {
+                switchCategory(event.state.category, false);
+            }
+        });
+
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.remove('active');
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('segstock_theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-icon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            document.getElementById('theme-text').innerText = isDark ? 'Modo Claro' : 'Modo Noturno';
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('segstock_db', JSON.stringify(db));
+        }
+
+        function loadFromGoogleSheets() {
+            if (!GOOGLE_API_URL) return;
+            showLoading();
+
+            fetch(GOOGLE_API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && !data.error) {
+                        db = { ...db, ...data };
+                        saveToStorage();
+                        renderTable();
+                        showToast('Dados da planilha carregados!', 'success');
+                    }
+                })
+                .catch(err => {
+                    console.error('Erro ao carregar dados:', err);
+                    renderTable();
+                })
+                .finally(() => {
+                    hideLoading();
+                });
+        }
+
+        function syncToGoogleSheets(category, itemData) {
+            if (!GOOGLE_API_URL) return;
+            showLoading();
+            fetch(GOOGLE_API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category: category, item: itemData })
+            })
+            .then(() => showToast('Salvo no sistema e na Planilha Google!', 'info'))
+            .catch(err => console.error('Erro na sincronização:', err))
+            .finally(() => hideLoading());
+        }
+
+        function switchCategory(catKey, pushToHistory = true) {
+            currentCategory = catKey;
+            
+            if (pushToHistory && history.state?.category !== catKey) {
+                history.pushState({ category: catKey }, '', `#${catKey}`);
+            }
+
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const categoryKeys = Object.keys(CATEGORIES);
+            const activeIndex = categoryKeys.indexOf(catKey);
+            if (document.querySelectorAll('.nav-item')[activeIndex]) {
+                document.querySelectorAll('.nav-item')[activeIndex].classList.add('active');
+            }
+
+            const config = CATEGORIES[catKey];
+            document.getElementById('category-header-title').innerText = config.title;
+            document.getElementById('category-header-desc').innerText = config.desc;
+
+            const filterPiramide = document.getElementById('filter-piramide');
+            const filterCategory = document.getElementById('filter-category');
+            const metricAndamentoContainer = document.getElementById('metric-andamento-container');
+            const metricOkContainer = document.getElementById('metric-ok-container');
+            const dashboardVisuals = document.getElementById('dashboard-visuals-container');
+            const btnNewHeader = document.getElementById('btn-new-header');
+            const btnLoteHeader = document.getElementById('btn-lote-header');
+            const btnSaidaHeader = document.getElementById('btn-saida-header');
+            const btnExportHeader = document.getElementById('btn-export-header');
+
+            if (catKey === 'dashboard') {
+                dashboardVisuals.style.display = 'grid';
+                filterCategory.style.display = 'block';
+                filterPiramide.style.display = 'block';
+                metricAndamentoContainer.style.display = 'flex';
+                metricOkContainer.style.display = 'flex';
+                btnNewHeader.style.display = 'none';
+                btnLoteHeader.style.display = 'none';
+                btnSaidaHeader.style.display = 'inline-flex';
+                btnExportHeader.style.display = 'inline-flex';
+                document.getElementById('table-card-title').innerText = 'Todos os Registros da Planilha';
+                document.getElementById('label-metric-total').innerText = 'Total Geral de Itens';
+                document.getElementById('label-metric-andamento').innerText = 'Pirâmide: Em Andamento';
+                document.getElementById('label-metric-ok').innerText = 'Pirâmide: Concluídos (OK)';
+            } else {
+                dashboardVisuals.style.display = 'none';
+                filterCategory.style.display = 'none';
+                btnNewHeader.style.display = 'inline-flex';
+                btnLoteHeader.style.display = 'inline-flex';
+                btnSaidaHeader.style.display = 'inline-flex';
+                btnExportHeader.style.display = 'inline-flex';
+                document.getElementById('table-card-title').innerText = 'Registros da Categoria';
+                document.getElementById('label-metric-total').innerText = 'Total na Categoria';
+                document.getElementById('label-metric-andamento').innerText = 'Pirâmide: Em Andamento';
+                document.getElementById('label-metric-ok').innerText = 'Pirâmide: Concluídos (OK)';
+
+                if (config.hasPiramide) {
+                    filterPiramide.style.display = 'block';
+                    metricAndamentoContainer.style.display = 'flex';
+                    metricOkContainer.style.display = 'flex';
+                } else {
+                    filterPiramide.style.display = 'none';
+                    metricAndamentoContainer.style.display = 'none';
+                    metricOkContainer.style.display = 'none';
+                }
+            }
+
+            renderTable();
+        }
+
+        function getAllItemsCombined() {
+            let combined = [];
+            const categories = Object.keys(CATEGORY_NAMES);
+            categories.forEach(cat => {
+                if (db[cat]) {
+                    db[cat].forEach(item => {
+                        combined.push({
+                            ...item,
+                            _categoryKey: cat,
+                            _categoryName: CATEGORY_NAMES[cat] || cat
+                        });
+                    });
+                }
+            });
+            return combined;
+        }
+
+        function renderTable() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const filterPiramideVal = document.getElementById('filter-piramide').value;
+            const filterCategoryVal = document.getElementById('filter-category').value;
+
+            if (currentCategory === 'dashboard') {
+                renderDashboardView(searchVal, filterPiramideVal, filterCategoryVal);
+            } else {
+                renderCategoryView(searchVal, filterPiramideVal);
+            }
+        }
+
+        function renderDashboardView(searchVal, filterPiramideVal, filterCategoryVal) {
+            const tableHead = document.getElementById('table-head');
+            const tableBody = document.getElementById('table-body');
+
+            let allItems = getAllItemsCombined();
+            updateDashboardChartsAndMetrics(allItems);
+
+            let filteredItems = allItems.filter(item => {
+                const matchesSearch = Object.values(item).some(val => String(val).toLowerCase().includes(searchVal));
+                let matchesPiramide = true;
+                if (filterPiramideVal !== 'ALL') {
+                    matchesPiramide = item.piramide === filterPiramideVal;
+                }
+                let matchesCat = true;
+                if (filterCategoryVal !== 'ALL') {
+                    matchesCat = item._categoryKey === filterCategoryVal;
+                }
+                return matchesSearch && matchesPiramide && matchesCat;
+            });
+
+            tableHead.innerHTML = `
+                <tr>
+                    <th>CATEGORIA</th>
+                    <th>CÓDIGO / IDENTIFICADOR</th>
+                    <th>DESCRIÇÃO / EQUIPAMENTO</th>
+                    <th>N° SÉRIE / QTD</th>
+                    <th>DATA</th>
+                    <th>PIRÂMIDE</th>
+                    <th class="th-actions">AÇÕES</th>
+                </tr>
+            `;
+
+            if (filteredItems.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-folder-open"></i><p>Nenhum registro encontrado na busca da planilha.</p></div></td></tr>`;
+                return;
+            }
+
+            let bodyHTML = '';
+            filteredItems.forEach(item => {
+                const cod = item.codigo || item.nome || '-';
+                const equip = item.equipamento || item.nome || '-';
+                const serieOrQty = item.serie || (item.quantidade ? item.quantidade + ' un.' : '-');
+                
+                let piramideHTML = '-';
+                if (item.piramide) {
+                    const isOk = item.piramide === 'OK';
+                    const badgeClass = isOk ? 'ok' : 'andamento';
+                    const icon = isOk ? 'fa-check' : 'fa-clock';
+                    piramideHTML = `<span class="status-badge ${badgeClass}" onclick="togglePiramideStatus('${item.id}', '${item._categoryKey}')"><i class="fa-solid ${icon}"></i> ${item.piramide}</span>`;
+                }
+
+                let formattedDate = item.data || '-';
+                if (formattedDate && formattedDate.includes('-')) {
+                    formattedDate = formattedDate.split('-').reverse().join('/');
+                }
+
+                let tagSaida = item._dadoBaixaSaida ? `<span class="badge-saida-tag" title="Baixa dada como saída">SAÍDA</span>` : '';
+
+                bodyHTML += `<tr>
+                    <td><span class="badge-category">${item._categoryName}</span>${tagSaida}</td>
+                    <td><span class="code-badge">${cod}</span></td>
+                    <td>${equip}</td>
+                    <td>${serieOrQty}</td>
+                    <td>${formattedDate}</td>
+                    <td>${piramideHTML}</td>
+                    <td style="text-align: center;">
+                        <div class="action-btns">
+                            ${item._categoryKey === 'saida' ? 
+                                `<button class="btn-icon voltar-btn" onclick="openVoltarModal('${item.id}')" title="Voltar para Categoria"><i class="fa-solid fa-arrow-rotate-left"></i></button>` : 
+                                `<button class="btn-icon descarte-btn" onclick="openDescarteModal('${item.id}', '${item._categoryKey}')" title="Mandar para Descarte"><i class="fa-solid fa-box-archive"></i></button>`
+                            }
+                            <button class="btn-icon delete" onclick="openDeleteModal('${item.id}', '${item._categoryKey}')" title="Excluir Registro"><i class="fa-solid fa-trash"></i></button>
+                            <button class="btn-icon info-btn" onclick="openInfoModal('${item.data || ''}', '${item.observacao || ''}')" title="Informação"><i class="fa-solid fa-circle-info"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            tableBody.innerHTML = bodyHTML;
+        }
+
+        function renderCategoryView(searchVal, filterPiramideVal) {
+            const config = CATEGORIES[currentCategory];
+            const tableHead = document.getElementById('table-head');
+            const tableBody = document.getElementById('table-body');
+
+            let headHTML = '<tr>';
+            config.fields.forEach(f => headHTML += `<th>${f.label}</th>`);
+            headHTML += '<th class="th-actions">AÇÕES</th></tr>';
+            tableHead.innerHTML = headHTML;
+
+            let items = db[currentCategory] || [];
+            items = items.filter(item => {
+                const matchesSearch = Object.values(item).some(val => String(val).toLowerCase().includes(searchVal));
+                let matchesPiramide = true;
+                if (config.hasPiramide && filterPiramideVal !== 'ALL') {
+                    matchesPiramide = item.piramide === filterPiramideVal;
+                }
+                return matchesSearch && matchesPiramide;
+            });
+
+            updateCategoryMetrics(items);
+
+            if (items.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="${config.fields.length + 1}"><div class="empty-state"><i class="fa-solid fa-folder-open"></i><p>Nenhum registro encontrado nesta categoria.</p></div></td></tr>`;
+                return;
+            }
+
+            let bodyHTML = '';
+            items.forEach(item => {
+                bodyHTML += '<tr>';
+                config.fields.forEach(f => {
+                    const val = item[f.id] || '-';
+                    if (f.id === 'codigo') {
+                        let tagSaida = item._dadoBaixaSaida ? `<span class="badge-saida-tag" title="Baixa dada como saída">SAÍDA</span>` : '';
+                        bodyHTML += `<td><span class="code-badge">${val}</span>${tagSaida}</td>`;
+                    } else if (f.id === 'piramide') {
+                        const isOk = val === 'OK';
+                        const badgeClass = isOk ? 'ok' : 'andamento';
+                        const icon = isOk ? 'fa-check' : 'fa-clock';
+                        bodyHTML += `<td><span class="status-badge ${badgeClass}" onclick="togglePiramideStatus('${item.id}', '${currentCategory}')"><i class="fa-solid ${icon}"></i> ${val}</span></td>`;
+                    } else if (f.id === 'data') {
+                        let formattedDate = val;
+                        if (val && val.includes('-')) {
+                            formattedDate = val.split('-').reverse().join('/');
+                        }
+                        bodyHTML += `<td>${formattedDate}</td>`;
+                    } else if (f.id === 'quantidade') {
+                        bodyHTML += `<td><strong>${val} un.</strong></td>`;
+                    } else {
+                        bodyHTML += `<td>${val}</td>`;
+                    }
+                });
+
+                let extraAction = '';
+                if (currentCategory === 'saida') {
+                    extraAction = `<button class="btn-icon voltar-btn" onclick="openVoltarModal('${item.id}')" title="VOLTAR para aba"><i class="fa-solid fa-arrow-rotate-left"></i></button>`;
+                } else if (currentCategory !== 'descarte') {
+                    extraAction = `<button class="btn-icon descarte-btn" onclick="openDescarteModal('${item.id}', '${currentCategory}')" title="MANDAR PARA DESCARTE"><i class="fa-solid fa-box-archive"></i></button>`;
+                }
+
+                bodyHTML += `<td style="text-align: center;">
+                    <div class="action-btns">
+                        ${extraAction}
+                        <button class="btn-icon delete" onclick="openDeleteModal('${item.id}', '${currentCategory}')" title="Excluir Registro"><i class="fa-solid fa-trash"></i></button>
+                        <button class="btn-icon info-btn" onclick="openInfoModal('${item.data || ''}', '${item.observacao || ''}')" title="Informação"><i class="fa-solid fa-circle-info"></i></button>
+                    </div>
+                </td></tr>`;
+            });
+            tableBody.innerHTML = bodyHTML;
+        }
+
+        function updateCategoryMetrics(filteredItems) {
+            const allCategoryItems = db[currentCategory] || [];
+            document.getElementById('metric-total').innerText = allCategoryItems.length;
+            if (CATEGORIES[currentCategory].hasPiramide) {
+                document.getElementById('metric-andamento').innerText = allCategoryItems.filter(i => i.piramide === 'EM ANDAMENTO').length;
+                document.getElementById('metric-ok').innerText = allCategoryItems.filter(i => i.piramide === 'OK').length;
+            }
+        }
+
+        function updateDashboardChartsAndMetrics(allItems) {
+            const total = allItems.length;
+            const andamentoCount = allItems.filter(i => i.piramide === 'EM ANDAMENTO').length;
+            const okCount = allItems.filter(i => i.piramide === 'OK').length;
+
+            document.getElementById('metric-total').innerText = total;
+            document.getElementById('metric-andamento').innerText = andamentoCount;
+            document.getElementById('metric-ok').innerText = okCount;
+
+            const categoryContainer = document.getElementById('category-distribution-bars');
+            const categories = Object.keys(CATEGORY_NAMES);
+            
+            let catHTML = '';
+            categories.forEach(cat => {
+                const count = db[cat] ? db[cat].length : 0;
+                const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+                catHTML += `
+                    <div>
+                        <div class="progress-item-info">
+                            <span>${CATEGORY_NAMES[cat]}</span>
+                            <span>${count} it. (${percentage}%)</span>
+                        </div>
+                        <div class="progress-bg">
+                            <div class="progress-fill" style="width: ${percentage}%;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            categoryContainer.innerHTML = catHTML;
+
+            const piramideContainer = document.getElementById('piramide-status-bars');
+            const totalPiramideItems = andamentoCount + okCount;
+            const percAndamento = totalPiramideItems > 0 ? Math.round((andamentoCount / totalPiramideItems) * 100) : 0;
+            const percOk = totalPiramideItems > 0 ? Math.round((okCount / totalPiramideItems) * 100) : 0;
+
+            piramideContainer.innerHTML = `
+                <div>
+                    <div class="progress-item-info">
+                        <span>Em Andamento</span>
+                        <span>${andamentoCount} it. (${percAndamento}%)</span>
+                    </div>
+                    <div class="progress-bg">
+                        <div class="progress-fill" style="width: ${percAndamento}%; background-color: var(--status-andamento);"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="progress-item-info">
+                        <span>Concluídos (OK)</span>
+                        <span>${okCount} it. (${percOk}%)</span>
+                    </div>
+                    <div class="progress-bg">
+                        <div class="progress-fill" style="width: ${percOk}%; background-color: var(--status-ok);"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function togglePiramideStatus(itemId, targetCatKey) {
+            const catKey = targetCatKey || currentCategory;
+            const item = db[catKey].find(i => i.id === itemId);
+            if (item) {
+                item.piramide = item.piramide === 'EM ANDAMENTO' ? 'OK' : 'EM ANDAMENTO';
+                saveToStorage();
+                renderTable();
+                syncToGoogleSheets(catKey, item);
+                showToast(`Status atualizado para: ${item.piramide}`, 'info');
+            }
+        }
+
+        /* Modal Entrada em Lote Functions */
+        function openLoteModal() {
+            if (currentCategory === 'dashboard') {
+                alert('Selecione uma categoria específica para dar entrada em lote.');
+                return;
+            }
+            document.getElementById('lote-text').value = '';
+            document.getElementById('lote-modal-overlay').classList.add('active');
+        }
+
+        function closeLoteModal() {
+            document.getElementById('lote-modal-overlay').classList.remove('active');
+        }
+
+        function processarLote(e) {
+            e.preventDefault();
+            const rawText = document.getElementById('lote-text').value.trim();
+            if (!rawText) return;
+
+            const lines = rawText.split('\n');
+            const config = CATEGORIES[currentCategory];
+            let count = 0;
+
+            lines.forEach(line => {
+                const cols = line.includes('\t') ? line.split('\t') : line.split(',');
+                if (cols.length >= 2) {
+                    let newItem = { id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 4) };
+                    
+                    if (currentCategory === 'acessorios') {
+                        newItem.nome = cols[0]?.trim() || '';
+                        newItem.quantidade = cols[1]?.trim() || '1';
+                        newItem.data = cols[2]?.trim() || new Date().toISOString().split('T')[0];
+                        newItem.observacao = cols[3]?.trim() || '';
+                    } else {
+                        newItem.codigo = cols[0]?.trim() || '';
+                        newItem.equipamento = cols[1]?.trim() || '';
+                        newItem.serie = cols[2]?.trim() || '';
+                        newItem.data = cols[3]?.trim() || new Date().toISOString().split('T')[0];
+                        
+                        if (config.hasPiramide) {
+                            newItem.piramide = cols[4]?.trim() || 'EM ANDAMENTO';
+                            newItem.observacao = cols[5]?.trim() || '';
+                        } else {
+                            newItem.observacao = cols[4]?.trim() || '';
+                        }
+                    }
+
+                    db[currentCategory].unshift(newItem);
+                    syncToGoogleSheets(currentCategory, newItem);
+                    count++;
+                }
+            });
+
+            saveToStorage();
+            closeLoteModal();
+            renderTable();
+            showToast(`${count} itens cadastrados em lote com sucesso!`, 'success');
+        }
+
+        /* Modal e lógica de SAÍDA */
+        function openSaidaModal() {
+            document.getElementById('saida-codigo').value = '';
+            
+            const saidaSelect = document.getElementById('saida-equipamento');
+            saidaSelect.innerHTML = '<option value="" disabled selected>Selecione um equipamento...</option>';
+            EQUIPMENT_LIST.forEach(equip => {
+                saidaSelect.innerHTML += `<option value="${equip}">${equip}</option>`;
+            });
+
+            document.getElementById('saida-serie').value = '';
+            document.getElementById('saida-data').value = new Date().toISOString().split('T')[0];
+            document.getElementById('saida-observacao').value = '';
+            document.getElementById('saida-modal-overlay').classList.add('active');
+        }
+
+        function closeSaidaModal() {
+            document.getElementById('saida-modal-overlay').classList.remove('active');
+        }
+
+        function saveSaida(e) {
+            e.preventDefault();
+            const codigo = document.getElementById('saida-codigo').value;
+            const equipamento = document.getElementById('saida-equipamento').value;
+            const serie = document.getElementById('saida-serie').value;
+            const data = document.getElementById('saida-data').value;
+            const observacao = document.getElementById('saida-observacao').value.substring(0, 50);
+
+            let originalCat = null;
+            let originalItem = null;
+            for (let cat in db) {
+                if (cat === 'saida') continue;
+                const found = db[cat].find(i => (i.codigo && i.codigo === codigo) || (i.serie && i.serie === serie));
+                if (found) {
+                    originalCat = cat;
+                    originalItem = found;
+                    break;
+                }
+            }
+
+            if (originalItem) {
+                originalItem._dadoBaixaSaida = true;
+            }
+
+            const newSaidaItem = {
+                id: Date.now().toString(),
+                codigo: codigo,
+                equipamento: equipamento,
+                serie: serie,
+                data: data,
+                observacao: observacao,
+                _originalCategory: originalCat || 'equip_prontos'
+            };
+
+            db.saida.unshift(newSaidaItem);
+            saveToStorage();
+            syncToGoogleSheets('saida', newSaidaItem);
+            closeSaidaModal();
+            renderTable();
+            showToast('Saida registrada com sucesso!', 'success');
+        }
+
+        /* Modal VOLTAR (Escolher aba) */
+        function openVoltarModal(itemId) {
+            itemToVoltar = db.saida.find(i => i.id === itemId);
+            if (!itemToVoltar) return;
+
+            if (itemToVoltar._originalCategory) {
+                document.getElementById('voltar-target-category').value = itemToVoltar._originalCategory;
+            }
+            document.getElementById('voltar-modal-overlay').classList.add('active');
+        }
+
+        function closeVoltarModal() {
+            itemToVoltar = null;
+            document.getElementById('voltar-modal-overlay').classList.remove('active');
+        }
+
+        function confirmVoltar(e) {
+            e.preventDefault();
+            if (!itemToVoltar) return;
+
+            const targetCategory = document.getElementById('voltar-target-category').value;
+            const origCategory = itemToVoltar._originalCategory;
+
+            if (origCategory && db[origCategory]) {
+                const origItem = db[origCategory].find(i => 
+                    (i.codigo && i.codigo === itemToVoltar.codigo) || 
+                    (i.serie && i.serie === itemToVoltar.serie)
+                );
+                if (origItem) {
+                    delete origItem._dadoBaixaSaida;
+                }
+            }
+
+            db.saida = db.saida.filter(i => i.id !== itemToVoltar.id);
+
+            if (targetCategory !== origCategory && !db[targetCategory].some(i => i.id === itemToVoltar.id)) {
+                const restoredItem = { ...itemToVoltar };
+                delete restoredItem._dadoBaixaSaida;
+                delete restoredItem._originalCategory;
+                db[targetCategory].unshift(restoredItem);
+                syncToGoogleSheets(targetCategory, restoredItem);
+            } else {
+                syncRemovalFromSaida(itemToVoltar);
+            }
+
+            saveToStorage();
+            closeVoltarModal();
+            renderTable();
+            showToast('Saída estornada com sucesso!', 'success');
+        }
+
+        function syncRemovalFromSaida(itemData) {
+            if (!GOOGLE_API_URL) return;
+            showLoading();
+            fetch(GOOGLE_API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete_saida', item: itemData })
+            })
+            .then(() => showToast('Linha removida da aba SAÍDA!', 'info'))
+            .catch(err => console.error('Erro na remoção da saída:', err))
+            .finally(() => hideLoading());
+        }
+
+        /* Modal MANDAR PARA DESCARTE */
+        function openDescarteModal(itemId, catKey) {
+            itemToDescarte = { itemId, catKey };
+            document.getElementById('descarte-data').value = new Date().toISOString().split('T')[0];
+            document.getElementById('descarte-observacao').value = '';
+            document.getElementById('descarte-modal-overlay').classList.add('active');
+        }
+
+        function closeDescarteModal() {
+            itemToDescarte = null;
+            document.getElementById('descarte-modal-overlay').classList.remove('active');
+        }
+
+        function confirmDescarte(e) {
+            e.preventDefault();
+            if (!itemToDescarte) return;
+
+            const { itemId, catKey } = itemToDescarte;
+            const originalItem = db[catKey].find(i => i.id === itemId);
+
+            if (originalItem) {
+                const dataDescarte = document.getElementById('descarte-data').value;
+                const obsDescarte = document.getElementById('descarte-observacao').value;
+
+                db[catKey] = db[catKey].filter(i => i.id !== itemId);
+
+                const descarteItem = {
+                    ...originalItem,
+                    data: dataDescarte,
+                    observacao: obsDescarte
+                };
+
+                db.descarte.unshift(descarteItem);
+                saveToStorage();
+                syncToGoogleSheets('descarte', descarteItem);
+                showToast('Item movido para descarte!', 'success');
+            }
+
+            closeDescarteModal();
+            renderTable();
+        }
+
+        /* Modal INFORMAÇÃO ("I") */
+        function openInfoModal(dataVal, obsVal) {
+            let formattedDate = dataVal || '-';
+            if (formattedDate && formattedDate.includes('-')) {
+                formattedDate = formattedDate.split('-').reverse().join('/');
+            }
+            document.getElementById('info-modal-data').innerText = formattedDate;
+            document.getElementById('info-modal-observacao').innerText = obsVal && obsVal.trim() !== '' ? obsVal : 'Sem observações.';
+            document.getElementById('info-modal-overlay').classList.add('active');
+        }
+
+        function closeInfoModal() {
+            document.getElementById('info-modal-overlay').classList.remove('active');
+        }
+
+        /* Modal Deletar com Senha */
+        function openDeleteModal(itemId, targetCatKey) {
+            itemToDeleteId = itemId;
+            itemToDeleteCategory = targetCatKey || currentCategory;
+            document.getElementById('delete-password').value = '';
+            document.getElementById('delete-modal-overlay').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            itemToDeleteId = null;
+            itemToDeleteCategory = null;
+            document.getElementById('delete-modal-overlay').classList.remove('active');
+        }
+
+        function confirmDeleteItem(e) {
+            e.preventDefault();
+            const inputPassword = document.getElementById('delete-password').value;
+            if (inputPassword === systemPassword) {
+                if (itemToDeleteId && itemToDeleteCategory) {
+                    db[itemToDeleteCategory] = db[itemToDeleteCategory].filter(i => i.id !== itemToDeleteId);
+                    saveToStorage();
+                    renderTable();
+                    closeDeleteModal();
+                    showToast('Item excluído com sucesso!', 'success');
+                }
+            } else {
+                alert('Senha incorreta! Não foi possível excluir.');
+            }
+        }
+
+        /* Modal Mudar Senha */
+        function openPasswordModal() {
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('password-modal-overlay').classList.add('active');
+        }
+
+        function closePasswordModal() {
+            document.getElementById('password-modal-overlay').classList.remove('active');
+        }
+
+        function changePassword(e) {
+            e.preventDefault();
+            const currentInput = document.getElementById('current-password').value;
+            const newInput = document.getElementById('new-password').value;
+
+            if (currentInput === systemPassword) {
+                systemPassword = newInput;
+                localStorage.setItem('segstock_password', newInput);
+                closePasswordModal();
+                showToast('Senha alterada com sucesso!', 'success');
+            } else {
+                alert('A senha atual está incorreta!');
+            }
+        }
+
+        function openModal() {
+            if (currentCategory === 'dashboard') return;
+            const config = CATEGORIES[currentCategory];
+            const fieldsContainer = document.getElementById('modal-fields');
+            document.getElementById('modal-title').innerText = `Novo Registro - ${config.title}`;
+            const today = new Date().toISOString().split('T')[0];
+
+            let fieldsHTML = '';
+            config.fields.forEach(f => {
+                fieldsHTML += `<div class="form-group"><label>${f.label}</label>`;
+                if (f.type === 'select') {
+                    fieldsHTML += `<select class="form-control" id="field-${f.id}" ${f.required ? 'required' : ''}>`;
+                    if (f.id === 'equipamento') {
+                        fieldsHTML += `<option value="" disabled selected>Selecione um equipamento...</option>`;
+                    }
+                    f.options.forEach(opt => fieldsHTML += `<option value="${opt}" ${opt === f.default ? 'selected' : ''}>${opt}</option>`);
+                    fieldsHTML += `</select>`;
+                } else {
+                    fieldsHTML += `<input type="${f.type}" class="form-control" id="field-${f.id}" value="${f.type === 'date' ? today : ''}" ${f.required ? 'required' : ''}>`;
+                }
+                fieldsHTML += `</div>`;
+            });
+            fieldsContainer.innerHTML = fieldsHTML;
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+
+        function saveItem(e) {
+            e.preventDefault();
+            if (currentCategory === 'dashboard') return;
+            const config = CATEGORIES[currentCategory];
+            const newItem = { id: Date.now().toString() };
+            config.fields.forEach(f => newItem[f.id] = document.getElementById(`field-${f.id}`).value);
+            db[currentCategory].unshift(newItem);
+            saveToStorage();
+            syncToGoogleSheets(currentCategory, newItem);
+            closeModal();
+            renderTable();
+            showToast('Cadastrado com sucesso!', 'success');
+        }
+
+        function exportCSV() {
+            let items = [];
+
+            if (currentCategory === 'dashboard') {
+                items = getAllItemsCombined();
+                if (items.length === 0) return alert('Sem dados para exportar.');
+                let csv = 'data:text/csv;charset=utf-8,\uFEFF"CATEGORIA";"CÓDIGO/NOME";"EQUIPAMENTO";"N° SÉRIE/QTD";"DATA";"PIRÂMIDE";"OBSERVAÇÃO"\r\n';
+                items.forEach(item => {
+                    const cod = item.codigo || item.nome || '';
+                    const equip = item.equipamento || item.nome || '';
+                    const serieOrQty = item.serie || item.quantidade || '';
+                    csv += `"${item._categoryName}";"${cod}";"${equip}";"${serieOrQty}";"${item.data || ''}";"${item.piramide || ''}";"${item.observacao || ''}"\r\n`;
+                });
+                downloadCSV(csv, `SEGSAT_DASHBOARD_GERAL_${new Date().toISOString().split('T')[0]}.csv`);
+            } else {
+                const config = CATEGORIES[currentCategory];
+                items = db[currentCategory] || [];
+                if (items.length === 0) return alert('Sem dados para exportar.');
+                let csv = 'data:text/csv;charset=utf-8,\uFEFF' + config.fields.map(f => `"${f.label}"`).join(';') + '\r\n';
+                items.forEach(item => csv += config.fields.map(f => `"${item[f.id] || ''}"`).join(';') + '\r\n');
+                downloadCSV(csv, `SEGSAT_${currentCategory.toUpperCase()}_${new Date().toISOString().split('T')[0]}.csv`);
+            }
+        }
+
+        function downloadCSV(csvContent, fileName) {
+            const link = document.createElement('a');
+            link.setAttribute('href', encodeURI(csvContent));
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('CSV exportado!', 'info');
+        }
+
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.className = `toast show ${type}`;
+            setTimeout(() => toast.className = 'toast', 3000);
+        }
+    </script>
+</body>
+</html>
